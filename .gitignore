@@ -1,0 +1,7 @@
+# User settings
+.vs
+.vscode
+
+# Binaries
+bin/
+obj/
