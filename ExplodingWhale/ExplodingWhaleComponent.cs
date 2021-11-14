@@ -55,24 +55,38 @@ namespace ExplodingWhale
         {
             //DA.AbortComponentSolution();
 
-            object obj = null;
-            if (!DA.GetData("Object", ref obj)) return;
+           
+            object GHwrapper_obj = null;
+            if (!DA.GetData("Object", ref GHwrapper_obj)) return;
 
-            var type = obj.GetType();
+            /////
+
+            Type GHWrapper_type = GHwrapper_obj.GetType();
+            IList<PropertyInfo> GHWrapper_props = new List<PropertyInfo>(GHWrapper_type.GetProperties());
+
+            bool isValid = (bool)GHWrapper_props.First(x => x.Name == "IsValid").GetValue(GHwrapper_obj, null);
+            object obj = GHWrapper_props.First(x => x.Name == "Value").GetValue(GHwrapper_obj, null);
+
+
+            var object_type = obj.GetType();
+            IList<PropertyInfo> object_props = new List<PropertyInfo>(object_type.GetProperties());
+
+            List<string> propertyNames = new List<string>();
+            List<object> propertyValues = new List<object>();
+
+            foreach (PropertyInfo prop in object_props)
+            {
+                propertyNames.Add(prop.Name);
+                propertyValues.Add(prop.GetValue(obj, null));
+                // Do something with propValue
+            }
+
+            for (int i = 0; i < propertyNames.Count; i++)
+            {
+                
+            }
             
-            var fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
-            var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.CanRead);
 
-            var fieldNames = fields.Select(f => f.Name);
-            var propertiesNames = properties.Select(p => p.Name);
-            var fieldsAndPropertiesNames = fieldNames.Concat(propertiesNames);
-
-            var fieldValues = fields.Select(f => f.GetValue(f));
-            var propertyValues = properties.Select(p => p.GetValue(p));
-            var fieldsAndPropertiesValues = fieldValues.Concat(propertyValues);
-
-            DA.SetDataList("Fields", propertiesNames);
-            DA.SetDataList("Values", fieldValues);
         }
 
         public bool CanInsertParameter(GH_ParameterSide side, int index)
@@ -87,11 +101,12 @@ namespace ExplodingWhale
             else
                 return true;
         }
-
+        
         public IGH_Param CreateParameter(GH_ParameterSide side, int index)
         {
             throw new NotImplementedException();
         }
+        
 
         public bool DestroyParameter(GH_ParameterSide side, int index)
         {
