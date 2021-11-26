@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Grasshopper.Kernel.Parameters;
+using System.Collections; 
 
 // In order to load the result of this wizard, you will also need to
 // add the output bin/ folder of this project to the list of loaded
@@ -42,8 +44,8 @@ namespace ExplodingWhale
         /// </summary>
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            pManager.AddTextParameter("Fields", "F", "Fields and properties of object", GH_ParamAccess.list);
-            pManager.AddGenericParameter("Values", "V", "Values of fields and properties of object", GH_ParamAccess.list);
+            //pManager.AddTextParameter("Fields", "F", "Fields and properties of object", GH_ParamAccess.list);
+            //pManager.AddGenericParameter("Values", "V", "Values of fields and properties of object", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -53,9 +55,7 @@ namespace ExplodingWhale
         /// to store data in output parameters.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            //DA.AbortComponentSolution();
-
-           
+            //DA.AbortComponentSolution();           
             object GHwrapper_obj = null;
             if (!DA.GetData("Object", ref GHwrapper_obj)) return;
 
@@ -78,12 +78,30 @@ namespace ExplodingWhale
             {
                 propertyNames.Add(prop.Name);
                 propertyValues.Add(prop.GetValue(obj, null));
-                // Do something with propValue
             }
 
             for (int i = 0; i < propertyNames.Count; i++)
             {
+                object value = propertyValues[i];
+                //bool isList = value is IList; 
+
+                IGH_Param p = CreateParameter(GH_ParameterSide.Output, i);
+
+                p.Name = propertyNames[i];
+                p.NickName = p.Name;
+                p.Description = "A property of the input class instance";
+                p.Access = GH_ParamAccess.item; //isList ? GH_ParamAccess.list : GH_ParamAccess.item; 
+                Params.RegisterOutputParam(p, i);
+
+                //if (isList)
+                //    DA.SetDataList(i, (IList)value);
+                //else
                 
+            }
+
+            for (int i = 0; i < propertyValues.Count; i++)
+            {
+                DA.SetData(i, propertyValues[i]);
             }
             
 
@@ -104,7 +122,17 @@ namespace ExplodingWhale
         
         public IGH_Param CreateParameter(GH_ParameterSide side, int index)
         {
-            throw new NotImplementedException();
+            var param = new Param_GenericObject();            
+            //var param = new Param_ScriptVariable();
+            /*
+            param.Name = GH_ComponentParamServer.InventUniqueNickname("ABCDEFGHIJKLMNOPQRSTUVWXYZ", Params.Input);
+            param.NickName = param.Name;
+            param.Description = "Property Name";
+            param.Optional = true;
+            param.Access = GH_ParamAccess.item;
+            */
+
+            return param;
         }
         
 
