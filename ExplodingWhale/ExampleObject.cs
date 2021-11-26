@@ -10,10 +10,11 @@ namespace ExplodingWhale
 {
     public class ExampleObject
     {
-        public string PublicField = "Yup, this is public";
-        private string PrivateField = "Yes, this is private";
-        public string PublicProperty { get; set; }  = "Yup, this is public, get, set";
-        public string PrivateProperty { get; set; }  = "Yes, this is private, get, set";
+        public string PublicField = "Yup, this is a public field";
+        private string PrivateField = "Yes, this is a private field";
+        public string PublicProperty { get; set; }  = "Yup, this is a public property";
+        public string PrivateProperty { get; set; }  = "Yes, this is a private property";
+        public static string PublicStaticField = "Wow, a public static field";
 
         public ExampleObject()
         {

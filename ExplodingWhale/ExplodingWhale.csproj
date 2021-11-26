@@ -69,7 +69,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="ExampleObject.cs" />
     <Compile Include="ExplodingWhaleComponent.cs" />
     <Compile Include="ExplodingWhaleInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
